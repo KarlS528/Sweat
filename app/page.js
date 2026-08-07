@@ -236,37 +236,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-zinc-100 p-6">
-      <header className="mb-6 flex items-end justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight" style={{ color: ACCENT }}>
-            Sweat
-          </h1>
-          <p className="text-sm text-zinc-500">Equity from sweat + capital</p>
-        </div>
-        <div className="text-right">
-          <div className="text-xs uppercase tracking-wider text-zinc-500">Company Valuation</div>
-          <AnimatedValue
-            value={val != null ? formatMoney(val) : "—"}
-            className="text-3xl font-bold"
-          />
-          {latest && (
-            <div className="text-xs text-zinc-500 mt-1">
-              EBITDA {formatMoney(latest.ebitda)} × {latest.industryMultiple}x
-            </div>
-          )}
-          {!hasPositiveEbitda(financialSnapshots) && (
-            <div className="text-xs text-zinc-400 mt-1">
-              No positive EBITDA — percentages only.
-            </div>
-          )}
-        </div>
+      <header className="mb-5 flex items-baseline gap-3">
+        <h1 className="text-lg font-bold tracking-tight" style={{ color: ACCENT }}>
+          Sweat
+        </h1>
+        <p className="text-sm text-zinc-600">Equity from sweat + capital</p>
       </header>
 
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-3 gap-5 mb-5">
         {/* Donut */}
         <div className="bg-zinc-900 rounded-lg p-4 border border-zinc-800">
           <h2 className="text-xs uppercase tracking-wider text-zinc-500 mb-2">Equity Split</h2>
-          <ResponsiveContainer width="100%" height={280}>
+          <ResponsiveContainer width="100%" height={240}>
             <PieChart>
               <Pie
                 data={chartData}
@@ -291,42 +272,68 @@ export default function Home() {
             {chartData.map((d, i) => (
               <div key={d.name} className="flex items-center gap-1.5 text-xs text-zinc-400">
                 <span className="w-2.5 h-2.5 rounded-full" style={{ background: COLORS[i] }} />
-                {d.name} <AnimatedValue value={formatPct(d.value)} />
+                {d.name} <AnimatedValue value={formatPct(d.value)} className="tabular-nums" />
               </div>
             ))}
           </div>
         </div>
 
-        {/* Cap table */}
-        <div className="bg-zinc-900 rounded-lg p-4 border border-zinc-800">
-          <h2 className="text-xs uppercase tracking-wider text-zinc-500 mb-3">Cap Table</h2>
-          <table className="w-full text-sm">
+        {/* Valuation + cap table */}
+        <div className="col-span-2 bg-zinc-900 rounded-lg p-5 border border-zinc-800">
+          <div className="flex items-end justify-between mb-4 pb-4 border-b border-zinc-800">
+            <div>
+              <div className="text-xs uppercase tracking-wider text-zinc-500 mb-1">
+                Company Valuation
+              </div>
+              <AnimatedValue
+                value={val != null ? formatMoney(val) : "—"}
+                className="text-5xl font-bold tracking-tight tabular-nums"
+              />
+            </div>
+            <div className="text-right">
+              {latest && (
+                <div className="text-xs text-zinc-500 tabular-nums">
+                  EBITDA {formatMoney(latest.ebitda)} × {latest.industryMultiple}x
+                </div>
+              )}
+              {!hasPositiveEbitda(financialSnapshots) && (
+                <div className="text-xs mt-1" style={{ color: ACCENT }}>
+                  No positive EBITDA — percentages only.
+                </div>
+              )}
+            </div>
+          </div>
+
+          <table className="w-full">
             <thead>
-              <tr className="text-zinc-500 text-xs uppercase tracking-wider border-b border-zinc-800">
-                <th className="text-left pb-2">Contributor</th>
-                <th className="text-right pb-2">Cash</th>
-                <th className="text-right pb-2">Sweat</th>
-                <th className="text-right pb-2">Equity</th>
-                <th className="text-right pb-2">Value</th>
+              <tr className="text-zinc-600 text-xs uppercase tracking-wider border-b border-zinc-800">
+                <th className="text-left pb-2 font-medium">Contributor</th>
+                <th className="text-right pb-2 font-medium">Cash</th>
+                <th className="text-right pb-2 font-medium">Sweat</th>
+                <th className="text-right pb-2 font-medium">Equity</th>
+                <th className="text-right pb-2 font-medium">Value</th>
               </tr>
             </thead>
             <tbody>
               {capTable.map((row) => (
                 <tr key={row.id} className="border-b border-zinc-800/50">
-                  <td className="py-2.5">
-                    <div className="font-medium">{row.name}</div>
-                    <div className="text-xs text-zinc-500">{row.role}</div>
+                  <td className="py-3">
+                    <div className="font-medium text-sm">{row.name}</div>
+                    <div className="text-xs text-zinc-600">{row.role}</div>
                   </td>
-                  <td className="text-right py-2.5 text-zinc-400">
+                  <td className="text-right py-3 text-xs text-zinc-500 tabular-nums">
                     <AnimatedValue value={formatMoney(row.cashInvested)} />
                   </td>
-                  <td className="text-right py-2.5 text-zinc-400">
+                  <td className="text-right py-3 text-xs text-zinc-500 tabular-nums">
                     <AnimatedValue value={formatMoney(row.sweatDollars)} />
                   </td>
-                  <td className="text-right py-2.5 text-2xl font-bold" style={{ color: ACCENT }}>
+                  <td
+                    className="text-right py-3 text-4xl font-bold tabular-nums"
+                    style={{ color: ACCENT }}
+                  >
                     <AnimatedValue value={formatPct(row.equityPct)} />
                   </td>
-                  <td className="text-right py-2.5 text-xl font-semibold">
+                  <td className="text-right py-3 text-2xl font-semibold tabular-nums">
                     <AnimatedValue
                       value={row.stakeValue != null ? formatMoney(row.stakeValue) : "—"}
                     />
@@ -340,13 +347,13 @@ export default function Home() {
 
       {/* Forms */}
       <div className="grid grid-cols-3 gap-4">
-        <form onSubmit={addSweat} className="bg-zinc-900 rounded-lg p-4 border border-zinc-800">
-          <h3 className="text-xs uppercase tracking-wider text-zinc-500 mb-3">Add Sweat Entry</h3>
+        <form onSubmit={addSweat}>
+          <h3 className="text-xs uppercase tracking-wider text-zinc-600 mb-2">Add Sweat Entry</h3>
           <div className="space-y-2">
             <select
               value={sweatForm.contributorId}
               onChange={(e) => setSweatForm((f) => ({ ...f, contributorId: e.target.value }))}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm"
+              className="w-full bg-transparent border border-zinc-800 rounded px-3 py-1.5 text-sm text-zinc-200"
             >
               {contributors.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -359,7 +366,7 @@ export default function Home() {
               placeholder="Hours"
               value={sweatForm.hours}
               onChange={(e) => setSweatForm((f) => ({ ...f, hours: e.target.value }))}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm"
+              className="w-full bg-transparent border border-zinc-800 rounded px-3 py-1.5 text-sm text-zinc-200"
             />
             <input
               type="number"
@@ -369,25 +376,25 @@ export default function Home() {
               placeholder="Risk multiplier (1.0–2.0)"
               value={sweatForm.riskMultiplier}
               onChange={(e) => setSweatForm((f) => ({ ...f, riskMultiplier: e.target.value }))}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm"
+              className="w-full bg-transparent border border-zinc-800 rounded px-3 py-1.5 text-sm text-zinc-200"
             />
             <button
               type="submit"
-              className="w-full py-2 rounded text-sm font-medium text-black"
-              style={{ background: ACCENT }}
+              className="w-full py-1.5 rounded text-sm font-medium bg-zinc-900 border border-zinc-800"
+              style={{ color: ACCENT }}
             >
               Log Sweat
             </button>
           </div>
         </form>
 
-        <form onSubmit={addCapital} className="bg-zinc-900 rounded-lg p-4 border border-zinc-800">
-          <h3 className="text-xs uppercase tracking-wider text-zinc-500 mb-3">Add Capital Entry</h3>
+        <form onSubmit={addCapital}>
+          <h3 className="text-xs uppercase tracking-wider text-zinc-600 mb-2">Add Capital Entry</h3>
           <div className="space-y-2">
             <select
               value={capitalForm.contributorId}
               onChange={(e) => setCapitalForm((f) => ({ ...f, contributorId: e.target.value }))}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm"
+              className="w-full bg-transparent border border-zinc-800 rounded px-3 py-1.5 text-sm text-zinc-200"
             >
               {contributors.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -400,20 +407,20 @@ export default function Home() {
               placeholder="Amount ($)"
               value={capitalForm.amount}
               onChange={(e) => setCapitalForm((f) => ({ ...f, amount: e.target.value }))}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm"
+              className="w-full bg-transparent border border-zinc-800 rounded px-3 py-1.5 text-sm text-zinc-200"
             />
             <button
               type="submit"
-              className="w-full py-2 rounded text-sm font-medium text-black"
-              style={{ background: ACCENT }}
+              className="w-full py-1.5 rounded text-sm font-medium bg-zinc-900 border border-zinc-800"
+              style={{ color: ACCENT }}
             >
               Log Capital
             </button>
           </div>
         </form>
 
-        <form onSubmit={addSnapshot} className="bg-zinc-900 rounded-lg p-4 border border-zinc-800">
-          <h3 className="text-xs uppercase tracking-wider text-zinc-500 mb-3">
+        <form onSubmit={addSnapshot}>
+          <h3 className="text-xs uppercase tracking-wider text-zinc-600 mb-2">
             Add Financial Snapshot
           </h3>
           <div className="space-y-2">
@@ -422,7 +429,7 @@ export default function Home() {
               placeholder="EBITDA ($)"
               value={snapshotForm.ebitda}
               onChange={(e) => setSnapshotForm((f) => ({ ...f, ebitda: e.target.value }))}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm"
+              className="w-full bg-transparent border border-zinc-800 rounded px-3 py-1.5 text-sm text-zinc-200"
             />
             <input
               type="number"
@@ -432,12 +439,12 @@ export default function Home() {
               onChange={(e) =>
                 setSnapshotForm((f) => ({ ...f, industryMultiple: e.target.value }))
               }
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm"
+              className="w-full bg-transparent border border-zinc-800 rounded px-3 py-1.5 text-sm text-zinc-200"
             />
             <button
               type="submit"
-              className="w-full py-2 rounded text-sm font-medium text-black"
-              style={{ background: ACCENT }}
+              className="w-full py-1.5 rounded text-sm font-medium bg-zinc-900 border border-zinc-800"
+              style={{ color: ACCENT }}
             >
               Add Snapshot
             </button>

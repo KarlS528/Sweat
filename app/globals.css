@@ -21,18 +21,24 @@ body {
 
 .num-transition {
   display: inline-block;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  animation: numFlash 0.4s ease;
+  font-variant-numeric: tabular-nums;
+  animation: numFlash 0.55s ease-out;
 }
 
 @keyframes numFlash {
   0% {
-    opacity: 0.4;
-    transform: scale(0.97);
+    opacity: 0;
+    filter: brightness(2.2);
+    transform: translateY(-0.12em);
+  }
+  35% {
+    opacity: 1;
+    filter: brightness(2.2);
   }
   100% {
     opacity: 1;
-    transform: scale(1);
+    filter: brightness(1);
+    transform: translateY(0);
   }
 }
 
